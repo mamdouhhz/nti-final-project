@@ -23,5 +23,5 @@ output "node_group_id" {
 }
 
 output "node_role_arn" {
-  value = aws_iam_role.node.arn
+  value = aws_iam_role.node-role.arn
 }

@@ -33,77 +33,67 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "cluster_version" {
-  description = "Kubernetes version for the EKS control plane"
-  type        = string
-}
-
-variable "private_subnet_ids" {
-  description = "Private subnet IDs for worker nodes (nodes should not be in public subnets)"
-  type        = list(string)
-}
-
-variable "public_subnet_ids" {
-  description = "Public subnet IDs, included in cluster VPC config so the control plane can also see them (needed for public-facing ELBs)"
-  type        = list(string)
-}
-
-variable "node_instance_type" {
+variable "eks_node_instance_type" {
   description = "EC2 instance type for worker nodes"
   type        = string
 }
 
-variable "node_desired_size" {
+variable "eks_node_desired_size" {
   description = "Desired number of worker nodes"
   type        = number
 }
 
-variable "node_min_size" {
+variable "eks_node_min_size" {
   description = "Minimum number of worker nodes"
   type        = number
 }
 
-variable "node_max_size" {
+variable "eks_node_max_size" {
   description = "Maximum number of worker nodes"
   type        = number
 }
 
-variable cluster_identifier {
-  type        = string
-  default     = "mysql-cluster"
+variable "rds_cluster_identifier" {
+  type    = string
+  default = "mysql-cluster"
 }
 
-variable allocated_storage {
-  type        = number
-  default     = 10      
+variable "rds_allocated_storage" {
+  type    = number
+  default = 10
 }
 
-variable storage_type {
-  type        = string
-  default     = "gp2"   
+variable "rds_storage_type" {
+  type    = string
+  default = "gp2"
 }
 
-variable engine {
-  type        = string
-  default     = "mysql" 
+variable "rds_engine" {
+  type    = string
+  default = "mysql"
 }
 
-variable instance_class {
-  type        = string
-  default     = "db.t3.micro" 
+variable "rds_instance_class" {
+  type    = string
+  default = "db.t3.micro"
 }
 
-variable backup_retention_period {
-  type        = number
-  default     = 7
+variable "rds_backup_retention_period" {
+  type    = number
+  default = 7
 }
 
-variable preferred_backup_window {
-  type        = string
-  default     = "07:00-09:00"
+variable "rds_preferred_backup_window" {
+  type    = string
+  default = "07:00-09:00"
 }
 
-variable iops {
-  type        = number
-  default     = 1000
+variable "rds_iops" {
+  type    = number
+  default = 1000
 }
+
+# variable "kubernetes_version" {
+#   type    = string
+#   default = "1.32"
+# }

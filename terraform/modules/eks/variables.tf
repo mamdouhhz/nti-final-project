@@ -8,10 +8,10 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "cluster_version" {
-  description = "Kubernetes version for the EKS control plane"
-  type        = string
-}
+# variable "kubernetes_version" {
+#   type    = string
+#   default = "1.32"
+# }
 
 variable "private_subnet_ids" {
   description = "Private subnet IDs for worker nodes (nodes should not be in public subnets)"

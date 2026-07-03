@@ -19,12 +19,11 @@ resource "aws_iam_role_policy_attachment" "cluster_policy" {
 resource "aws_eks_cluster" "main" {
   name     = var.cluster_name
   role_arn = aws_iam_role.cluster-role.arn
-  version  = var.cluster_version
 
   vpc_config {
     subnet_ids              = concat(var.private_subnet_ids, var.public_subnet_ids)
-    endpoint_public_access   = true
-    endpoint_private_access  = true
+    endpoint_public_access  = true
+    endpoint_private_access = true
   }
 
   tags = {
@@ -67,7 +66,7 @@ resource "aws_eks_node_group" "main" {
   subnet_ids      = var.private_subnet_ids
 
   instance_types = [var.node_instance_type]
-  ami_type       = "AL2_x86_64"
+  ami_type       = "AL2023_x86_64_STANDARD"
   capacity_type  = "ON_DEMAND"
 
   scaling_config {

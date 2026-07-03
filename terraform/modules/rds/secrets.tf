@@ -1,9 +1,10 @@
 # aws secretsmanager create-secret \
-#   --name DBsecret \
-#   --secret-string '{"database_name":"mysql-db","master_username":"foo","master_password":"bar"}' \
+#   --name DBsecret3 \
+#   --secret-string '{"database_name":"mysqldb","master_username":"foo","master_password":"bar"}' \
+#   --region us-east-2
 
 data "aws_secretsmanager_secret" "example" {
-  name = "DBsecret"
+  name = "DBsecret2"
 }
 
 data "aws_secretsmanager_secret_version" "example" {

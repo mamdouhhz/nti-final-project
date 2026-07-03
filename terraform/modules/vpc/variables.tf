@@ -1,9 +1,3 @@
-variable "project_name" {
-  description = "Name prefix used for tagging and naming resources"
-  type        = string
-  default     = "nti-final-project"
-}
-
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
   type        = string
