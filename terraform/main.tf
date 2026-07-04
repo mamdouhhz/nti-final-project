@@ -35,3 +35,42 @@ module "rds" {
   vpc_cidr                = module.vpc.vpc_cidr
   private_subnet_ids      = module.vpc.private_subnet_ids
 }
+
+module "jenkins_ec2" {
+  source = "./modules/jenkins-ec2"
+
+  project_name     = var.project_name
+  vpc_id           = module.vpc.vpc_id
+  public_subnet_id = module.vpc.public_subnet_ids[0]
+
+  instance_type    = var.instance_type
+  key_pair_name    = var.key_pair_name
+  allowed_ssh_cidr = var.allowed_ssh_cidr
+  ami_id           = var.ami_id
+}
+
+module "ecr" {
+  source = "./modules/ecr"
+
+  project_name          = var.project_name
+  repo_name             = var.repo_name
+  image_tag_mutability  = var.image_tag_mutability
+  scan_on_push          = var.scan_on_push
+}
+
+module "s3-elb-logs" {
+  source = "./modules/s3-elb-logs"
+
+  project_name        = var.project_name
+  bucket_name         = var.bucket_name
+  log_retention_days  = var.log_retention_days
+}
+
+module "backup" {
+  source = "./modules/backup"
+
+  project_name           = var.project_name
+  jenkins_instance_arn   = module.jenkins_ec2.jenkins_instance_arn
+  backup_schedule        = var.backup_schedule
+  backup_retention_days  = var.backup_retention_days
+}

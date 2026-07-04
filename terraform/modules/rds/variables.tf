@@ -54,3 +54,9 @@ variable "private_subnet_ids" {
   description = "Private subnet IDs for the DB subnet group"
   type        = list(string)
 }
+
+# variable "iops" {
+#   description = "Provisioned IOPS for io1 storage type"
+#   type        = number
+#   default     = 3000
+# }

@@ -93,7 +93,66 @@ variable "rds_iops" {
   default = 1000
 }
 
-# variable "kubernetes_version" {
-#   type    = string
-#   default = "1.32"
-# }
+variable "instance_type" {
+  description = "EC2 instance type for the Jenkins server"
+  type        = string
+}
+
+variable "key_pair_name" {
+  description = "Name of an existing EC2 key pair used for SSH access"
+  type        = string
+}
+
+variable "allowed_ssh_cidr" {
+  description = "CIDR block allowed to SSH into the instance (restrict this to your IP, not 0.0.0.0/0)"
+  type        = string
+}
+
+variable "root_volume_size" {
+  description = "Root EBS volume size in GB"
+  type        = number
+  default     = 20
+}
+
+variable "ami_id" {
+  description = "AMI ID for the Jenkins EC2 instance"
+  type        = string
+}
+
+variable "repo_name" {
+  description = "Name of the ECR repository"
+  type        = string
+}
+
+variable "image_tag_mutability" {
+  description = "Whether image tags can be overwritten (MUTABLE) or not (IMMUTABLE)"
+  type        = string
+  default     = "MUTABLE"
+}
+
+variable "scan_on_push" {
+  description = "Whether to scan images for vulnerabilities automatically on push"
+  type        = bool
+  default     = true
+}
+
+variable "bucket_name" {
+  description = "Globally unique S3 bucket name for ELB access logs"
+  type        = string
+}
+
+variable "log_retention_days" {
+  description = "Number of days to retain ELB access logs before deletion"
+  type        = number
+  default     = 30
+}
+
+variable "backup_schedule" {
+  description = "Cron expression for when the daily backup runs"
+  type        = string
+}
+
+variable "backup_retention_days" {
+  description = "How many days to retain each snapshot before deletion"
+  type        = number
+}

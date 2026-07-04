@@ -34,7 +34,8 @@ resource "aws_db_instance" "mysql" {
   db_subnet_group_name    = aws_db_subnet_group.rds.name
   vpc_security_group_ids  = [aws_security_group.rds.id]
   skip_final_snapshot     = true
-  multi_az                = false   # set true later if you want real HA on a bigger class
+  multi_az                = false
+  # iops                    = var.iops
 }
 
 # resource "aws_rds_cluster" "mysql-cluster" {

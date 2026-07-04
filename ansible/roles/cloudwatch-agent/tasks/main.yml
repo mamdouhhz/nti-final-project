@@ -1,0 +1,27 @@
+- name: Download CloudWatch agent RPM
+  get_url:
+    url: https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
+    dest: /tmp/amazon-cloudwatch-agent.rpm
+
+- name: Install CloudWatch agent
+  yum:
+    name: /tmp/amazon-cloudwatch-agent.rpm
+    state: present
+    disable_gpg_check: true
+
+- name: Copy CloudWatch agent config
+  copy:
+    src: config.json
+    dest: /opt/aws/amazon-cloudwatch-agent/etc/config.json
+
+- name: Start CloudWatch agent with config
+  command: >
+    /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl
+    -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/config.json -s
+  notify: nothing
+
+- name: Ensure CloudWatch agent is enabled on boot
+  systemd:
+    name: amazon-cloudwatch-agent
+    enabled: true
+    state: started

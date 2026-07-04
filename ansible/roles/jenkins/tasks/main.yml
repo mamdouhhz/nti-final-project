@@ -1,0 +1,55 @@
+- name: Update all packages
+  yum:
+    name: "*"
+    state: latest
+
+- name: Install Java 17 (required by modern Jenkins)
+  yum:
+    name: java-17-amazon-corretto
+    state: present
+
+- name: Add Jenkins repo
+  get_url:
+    url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    dest: /etc/yum.repos.d/jenkins.repo
+
+- name: Import Jenkins GPG key
+  rpm_key:
+    state: present
+    key: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+- name: Install Jenkins
+  yum:
+    name: jenkins
+    state: present
+  notify: restart jenkins
+
+- name: Ensure Jenkins is started and enabled
+  systemd:
+    name: jenkins
+    state: started
+    enabled: true
+
+- name: Wait for Jenkins to be reachable on port 8080
+  wait_for:
+    port: 8080
+    delay: 10
+    timeout: 120
+
+- name: Read initial admin password
+  command: cat /var/lib/jenkins/secrets/initialAdminPassword
+  register: jenkins_initial_password
+  changed_when: false
+
+- name: Show initial admin password
+  debug:
+    msg: "Jenkins initial admin password: {{ jenkins_initial_password.stdout }}"
+
+- name: Install Jenkins plugins
+  jenkins_plugin:
+    name: "{{ item }}"
+    url_username: admin
+    url_password: "{{ jenkins_initial_password.stdout }}"
+    url: http://localhost:8080
+  loop: "{{ jenkins_plugins }}"
+  notify: restart jenkins

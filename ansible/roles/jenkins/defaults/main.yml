@@ -1,0 +1,8 @@
+jenkins_plugins:
+  - git
+  - workflow-aggregator
+  - github
+  - docker-workflow
+  - kubernetes
+  - sonar
+  - blueocean
