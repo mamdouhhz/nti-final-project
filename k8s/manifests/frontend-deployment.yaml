@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: <ECR_REPO_URL>/nti-final-project-frontend:latest
+          image: 463470958932.dkr.ecr.us-east-2.amazonaws.com/nti-final-ecr/nti-final-project-frontend:latest
           ports:
             - containerPort: 80
           resources:
