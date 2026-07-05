@@ -79,3 +79,13 @@ resource "aws_instance" "jenkins" {
     Name = "${var.project_name}-jenkins"
   }
 }
+
+resource "aws_iam_role_policy_attachment" "ecr_push" {
+  role       = aws_iam_role.jenkins.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+}
+
+resource "aws_iam_role_policy_attachment" "eks_access" {
+  role       = aws_iam_role.jenkins.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+}

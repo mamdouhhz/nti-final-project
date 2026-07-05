@@ -40,10 +40,12 @@
   command: cat /var/lib/jenkins/secrets/initialAdminPassword
   register: jenkins_initial_password
   changed_when: false
+  failed_when: false
 
 - name: Show initial admin password
   debug:
     msg: "Jenkins initial admin password: {{ jenkins_initial_password.stdout }}"
+  when: jenkins_initial_password.rc == 0
 
 - name: Install Jenkins plugins
   jenkins_plugin:
@@ -53,3 +55,79 @@
     url: http://localhost:8080
   loop: "{{ jenkins_plugins }}"
   notify: restart jenkins
+  when: jenkins_initial_password.rc == 0
+
+- name: Install Docker
+  yum:
+    name: docker
+    state: present
+
+- name: Ensure Docker is started and enabled
+  systemd:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add jenkins user to docker group (so Jenkins can run docker commands)
+  user:
+    name: jenkins
+    groups: docker
+    append: true
+  notify: restart jenkins
+
+- name: Add ec2-user to docker group (for manual testing/debugging)
+  user:
+    name: ec2-user
+    groups: docker
+    append: true
+
+- name: Download Trivy install script
+  get_url:
+    url: https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh
+    dest: /tmp/install-trivy.sh
+    mode: '0755'
+
+- name: Install Trivy
+  shell: /tmp/install-trivy.sh -b /usr/local/bin
+  args:
+    creates: /usr/local/bin/trivy
+
+- name: Download Helm install script
+  get_url:
+    url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    dest: /tmp/get-helm-3.sh
+    mode: '0755'
+
+- name: Install Helm
+  shell: /tmp/get-helm-3.sh
+  args:
+    creates: /usr/local/bin/helm
+
+# - name: Check if swap file exists
+#   stat:
+#     path: /swapfile
+#   register: swap_file_check
+
+# - name: Create swap file
+#   command: fallocate -l 1G /swapfile
+#   when: not swap_file_check.stat.exists
+
+# - name: Set swap file permissions
+#   file:
+#     path: /swapfile
+#     mode: '0600'
+#   when: not swap_file_check.stat.exists
+
+# - name: Format swap file
+#   command: mkswap /swapfile
+#   when: not swap_file_check.stat.exists
+
+# - name: Enable swap
+#   command: swapon /swapfile
+#   when: not swap_file_check.stat.exists
+
+# - name: Persist swap in fstab
+#   lineinfile:
+#     path: /etc/fstab
+#     line: '/swapfile swap swap defaults 0 0'
+#     state: present

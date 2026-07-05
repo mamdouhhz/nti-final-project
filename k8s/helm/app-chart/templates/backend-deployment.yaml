@@ -2,11 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  namespace: nti-final-project
+  namespace: {{ .Values.namespace }}
   labels:
     app: backend
 spec:
-  replicas: 2
+  replicas: {{ .Values.backend.replicas }}
   selector:
     matchLabels:
       app: backend
@@ -17,45 +17,45 @@ spec:
     spec:
       containers:
         - name: backend
-          image: 463470958932.dkr.ecr.us-east-2.amazonaws.com/nti-final-ecr/nti-final-project-backend:latest
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
           ports:
-            - containerPort: 5000
+            - containerPort: {{ .Values.backend.port }}
           env:
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: db-credentials
+                  name: {{ .Values.dbSecretName }}
                   key: DB_HOST
             - name: DB_PORT
               valueFrom:
                 secretKeyRef:
-                  name: db-credentials
+                  name: {{ .Values.dbSecretName }}
                   key: DB_PORT
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: db-credentials
+                  name: {{ .Values.dbSecretName }}
                   key: DB_NAME
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: db-credentials
+                  name: {{ .Values.dbSecretName }}
                   key: DB_USER
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-credentials
+                  name: {{ .Values.dbSecretName }}
                   key: DB_PASSWORD
           livenessProbe:
             httpGet:
               path: /health
-              port: 5000
+              port: {{ .Values.backend.port }}
             initialDelaySeconds: 10
             periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /health
-              port: 5000
+              port: {{ .Values.backend.port }}
             initialDelaySeconds: 5
             periodSeconds: 10
           resources:
