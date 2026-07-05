@@ -103,6 +103,11 @@
   args:
     creates: /usr/local/bin/helm
 
+- name: Install Git
+  yum:
+    name: git
+    state: present
+
 # - name: Check if swap file exists
 #   stat:
 #     path: /swapfile

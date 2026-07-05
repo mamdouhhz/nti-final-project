@@ -85,7 +85,26 @@ resource "aws_iam_role_policy_attachment" "ecr_push" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
 }
 
-resource "aws_iam_role_policy_attachment" "eks_access" {
-  role       = aws_iam_role.jenkins.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+resource "aws_iam_role_policy" "eks_describe" {
+  name = "${var.project_name}-eks-describe-policy"
+  role = aws_iam_role.jenkins.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }
+
+# resource "aws_iam_role_policy_attachment" "eks_access" {
+#   role       = aws_iam_role.jenkins.name
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+# }
