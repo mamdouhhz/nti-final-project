@@ -88,3 +88,15 @@ resource "aws_eks_node_group" "main" {
     Name = "${var.project_name}-node-group"
   }
 }
+
+# Allow inbound traffic on the NodePort range so the LoadBalancer Service
+# (frontend) can actually forward traffic from the ELB to the nodes.
+resource "aws_security_group_rule" "nodeport_ingress" {
+  type              = "ingress"
+  from_port         = 30000
+  to_port           = 32767
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
+  description       = "Allow ELB to reach NodePort services"
+}
