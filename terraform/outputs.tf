@@ -26,7 +26,3 @@ output "rds_endpoint" {
   description = "The endpoint of the RDS instance"
   value       = module.rds.rds_endpoint
 }
-
-output "elb_logs_bucket_name" {
-  value = module.s3_elb_logs.elb_logs_bucket_name
-}
